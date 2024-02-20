@@ -27,7 +27,8 @@ services:
     ports:
       - "8081:8000"
     depends_on:
-      - db
+        db:
+          condition: service_healthy
     deploy:
       resources:
         limits:
@@ -79,6 +80,12 @@ services:
       - POSTGRES_PASSWORD=123
       - POSTGRES_USER=admin
       - POSTGRES_DB=rinha
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
     ports:
       - "5432:5432"
     volumes:
